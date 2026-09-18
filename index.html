@@ -160,62 +160,6 @@
                 </label>
             </div>
 
-            <!-- 2. Frame Layers Management -->
-            <div class="bg-cardBg border border-borderBg p-5 rounded-2xl flex flex-col gap-4 shadow-lg">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-lg bg-brandRed/20 text-brandRed text-xs flex items-center justify-center font-bold">২</span>
-                        ফ্রেম লেয়ার অন/অফ
-                    </h3>
-                    <button id="reloadFramesBtn" class="text-[11px] text-brandRed hover:underline font-medium flex items-center gap-1">
-                        <i class="fa-solid fa-arrows-rotate"></i> রি-লোড ফ্রেম
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 text-xs">
-                    <label class="flex items-center gap-2 bg-zinc-900/80 p-2.5 rounded-xl border border-borderBg cursor-pointer hover:bg-zinc-850">
-                        <input type="checkbox" id="showBgToggle" checked class="accent-brandRed w-4 h-4 rounded">
-                        <span class="text-zinc-300 font-medium">ব্যাকগ্রাউন্ড লেয়ার</span>
-                    </label>
-                    <label class="flex items-center gap-2 bg-zinc-900/80 p-2.5 rounded-xl border border-borderBg cursor-pointer hover:bg-zinc-850">
-                        <input type="checkbox" id="showFgToggle" checked class="accent-brandRed w-4 h-4 rounded">
-                        <span class="text-zinc-300 font-medium">ফোরগ্রাউন্ড লেয়ার</span>
-                    </label>
-                </div>
-
-                <!-- Custom Frame URLs / Local Upload -->
-                <div class="flex flex-col gap-2 pt-2 border-t border-zinc-800">
-                    <details class="group">
-                        <summary class="text-xs font-medium text-zinc-400 cursor-pointer hover:text-zinc-200 flex items-center justify-between py-1">
-                            <span><i class="fa-solid fa-gear mr-1.5 text-zinc-500"></i> কাস্টম ফ্রেম লিংক বা ফাইল আপলোড</span>
-                            <i class="fa-solid fa-chevron-down text-[10px] group-open:rotate-180 transition"></i>
-                        </summary>
-                        <div class="flex flex-col gap-3 mt-3 pt-2 text-xs">
-                            <div>
-                                <label class="block text-[11px] text-zinc-400 mb-1">ব্যাকগ্রাউন্ড ইমেজ URL / ফাইল</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="bgUrlInput" placeholder="https://..." class="w-full bg-zinc-900 border border-borderBg rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:border-brandRed outline-none">
-                                    <label class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-borderBg rounded-lg cursor-pointer whitespace-nowrap text-zinc-300">
-                                        ফাইল
-                                        <input type="file" id="bgFileInput" accept="image/*" class="hidden">
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] text-zinc-400 mb-1">ফোরগ্রাউন্ড (overlay) PNG URL / ফাইল</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="fgUrlInput" placeholder="https://..." class="w-full bg-zinc-900 border border-borderBg rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:border-brandRed outline-none">
-                                    <label class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-borderBg rounded-lg cursor-pointer whitespace-nowrap text-zinc-300">
-                                        ফাইল
-                                        <input type="file" id="fgFileInput" accept="image/*" class="hidden">
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-                </div>
-            </div>
-
             <!-- 3. Essential Image Adjustments (Zoom, X, Y) -->
             <div class="bg-cardBg border border-borderBg p-5 rounded-2xl flex flex-col gap-4 shadow-lg">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
