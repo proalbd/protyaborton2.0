@@ -42,8 +42,9 @@
         /* Minimal Sliders */
         input[type=range] {
             -webkit-appearance: none;
+            appearance: none;
             background: #27272a;
-            height: 4px;
+            height: 5px;
             border-radius: 999px;
             outline: none;
         }
@@ -51,8 +52,8 @@
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: #ffffff;
             cursor: pointer;
@@ -61,12 +62,12 @@
         }
 
         input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
+            transform: scale(1.25);
         }
 
-        /* Custom Minimal Scrollbar */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 5px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #09090b;
@@ -79,8 +80,8 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between text-zinc-100 selection:bg-brandRed selection:text-white">
 
-    <!-- Minimal Header -->
-    <header class="border-b border-borderBg bg-darkBg/90 sticky top-0 z-50 px-4 py-3">
+    <!-- Header (Header download button removed) -->
+    <header class="border-b border-borderBg bg-darkBg/90 sticky top-0 z-50 px-4 py-3 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div>
@@ -90,98 +91,169 @@
         </div>
     </header>
 
-    <!-- Unified Main Layout (No Tabs, Completely Minimal) -->
+    <!-- Main Content Layout -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
         <!-- LEFT COLUMN: Canvas Live Viewport -->
         <div class="lg:col-span-6 flex flex-col items-center gap-4 lg:sticky lg:top-20">
-            <div class="w-full bg-cardBg border border-borderBg p-4 rounded-2xl flex flex-col items-center">
+            <div class="w-full bg-cardBg border border-borderBg p-4 rounded-2xl flex flex-col items-center shadow-xl">
 
                 <!-- Canvas Wrapper -->
-                <div id="canvasWrapper" class="relative rounded-xl overflow-hidden bg-black border border-borderBg aspect-square w-full max-w-[420px] group">
+                <div id="canvasWrapper" class="relative rounded-xl overflow-hidden bg-black border border-borderBg aspect-square w-full max-w-[420px] group shadow-inner">
                     <canvas id="dpCanvas" width="2048" height="2048" class="w-full h-full cursor-grab active:cursor-grabbing block touch-none"></canvas>
 
-                    <!-- Loading State -->
-                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-black/90 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4 text-center">
-                        <i class="fa-solid fa-spinner animate-spin text-2xl text-brandRed mb-2"></i>
-                        <h4 id="loadingText" class="text-sm font-semibold text-white">প্রসেসিং হচ্ছে...</h4>
+                    <!-- Loading Overlay -->
+                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-black/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4 text-center transition-all duration-300">
+                        <i class="fa-solid fa-spinner animate-spin text-3xl text-brandRed mb-3"></i>
+                        <h4 id="loadingText" class="text-sm font-bold text-white">প্রসেসিং হচ্ছে...</h4>
                         <p id="loadingSubtext" class="text-xs text-zinc-400 mt-1">অনুগ্রহ করে অপেক্ষা করুন</p>
                     </div>
                 </div>
 
-                <!-- Quick Canvas Operations -->
-                <div class="grid grid-cols-3 gap-2 mt-4 w-full max-w-[420px]">
-                    <button id="centerPhotoBtn" class="py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300 font-medium transition active:scale-95">
-                        <i class="fa-solid fa-crosshairs mr-1"></i> সেন্টারে আনুন
+                <!-- Canvas Status Info -->
+                <div id="frameStatusText" class="text-[11px] text-zinc-400 mt-2 text-center flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>ক্যানভাস রেডি (2048 × 2048 HD)</span>
+                </div>
+
+                <!-- Quick Operations -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 w-full max-w-[420px]">
+                    <button id="centerPhotoBtn" class="py-2.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-borderBg text-xs text-zinc-200 font-medium transition active:scale-95 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-crosshairs text-brandRed"></i> সেন্টার
                     </button>
-                    <button id="flipPhotoBtn" class="py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300 font-medium transition active:scale-95">
-                        <i class="fa-solid fa-right-left mr-1"></i> ফ্লিপ (Flip)
+                    <button id="flipPhotoBtn" class="py-2.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-borderBg text-xs text-zinc-200 font-medium transition active:scale-95 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-right-left text-brandRed"></i> ফ্লিপ
                     </button>
-                    <button id="resetTransformBtn" class="py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300 font-medium transition active:scale-95">
-                        <i class="fa-solid fa-rotate-left mr-1"></i> রিসেট
+                    <button id="removeBgBtn" class="py-2.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-borderBg text-xs text-zinc-200 font-medium transition active:scale-95 flex items-center justify-center gap-1.5" title="সাদা ব্যাকগ্রাউন্ড মুছে ফেলে ট্রান্সপারেন্ট করুন">
+                        <i class="fa-solid fa-wand-magic-sparkles text-brandRed"></i> সাদা BG মুছুন
+                    </button>
+                    <button id="resetTransformBtn" class="py-2.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-borderBg text-xs text-zinc-200 font-medium transition active:scale-95 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-rotate-left text-brandRed"></i> রিসেট
                     </button>
                 </div>
             </div>
 
             <!-- Primary Download Button -->
-            <button id="downloadBtn" class="w-full max-w-[420px] py-3 rounded-xl bg-brandRed hover:bg-red-700 text-white font-bold text-sm shadow-md transition active:scale-[0.99] flex items-center justify-center gap-2">
-                <i class="fa-solid fa-circle-down"></i>
-                <span>এইচডি ডি পি ডাউনলোড করুন</span>
+            <button id="downloadBtn" class="w-full max-w-[420px] py-3.5 rounded-xl bg-gradient-to-r from-red-600 to-brandRed hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg shadow-red-900/30 transition active:scale-[0.98] flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-down text-base"></i>
+                <span>এইচডি ছবি ডাউনলোড করুন</span>
             </button>
         </div>
 
-        <!-- RIGHT COLUMN: Single Unified Control Panel -->
+        <!-- RIGHT COLUMN: Control Panel -->
         <div class="lg:col-span-6 flex flex-col gap-5">
 
-            <!-- 1. Upload & AI Background Removal Section -->
-            <div class="bg-cardBg border border-borderBg p-5 rounded-2xl flex flex-col gap-3">
+            <!-- 1. Upload Section -->
+            <div class="bg-cardBg border border-borderBg p-5 rounded-2xl flex flex-col gap-3 shadow-lg">
                 <div class="flex items-center justify-between">
                     <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                        <span class="w-5 h-5 rounded bg-brandRed/20 text-brandRed text-xs flex items-center justify-center font-bold">১</span>
-                        ছবি আপলোড
+                        <span class="w-6 h-6 rounded-lg bg-brandRed/20 text-brandRed text-xs flex items-center justify-center font-bold">১</span>
+                        আপনার ছবি আপলোড করুন
                     </h3>
                 </div>
 
-                <label id="dropZone" class="flex flex-col items-center justify-center border border-dashed border-zinc-700 hover:border-brandRed bg-zinc-950/50 hover:bg-zinc-900/80 rounded-xl p-5 cursor-pointer transition group">
-                    <i class="fa-solid fa-cloud-arrow-up text-2xl text-zinc-400 group-hover:text-brandRed mb-2 transition"></i>
-                    <span class="text-xs font-semibold text-zinc-200">এখানে ছবি ড্রপ করুন অথবা ফাইল সিলেক্ট করুন</span>
-                    <span class="text-[10px] text-zinc-500 mt-0.5">JPG, PNG বা WEBP সমর্থিত</span>
+                <label id="dropZone" class="flex flex-col items-center justify-center border-2 border-dashed border-zinc-700 hover:border-brandRed bg-zinc-950/60 hover:bg-zinc-900/80 rounded-xl p-6 cursor-pointer transition-all duration-200 group text-center">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-zinc-400 group-hover:text-brandRed mb-2 transition transform group-hover:-translate-y-1"></i>
+                    <span class="text-xs font-semibold text-zinc-200">এখানে ছবি ড্রপ করুন অথবা ডিভাইস থেকে বেছে নিন</span>
+                    <span class="text-[11px] text-zinc-500 mt-1">JPG, PNG বা WEBP সমর্থিত (সাদা ব্যাকগ্রাউন্ড অটোমেটিক ক্লিয়ার হবে)</span>
                     <input type="file" id="userPhotoInput" accept="image/*" class="hidden">
                 </label>
             </div>
 
-            <!-- 2. Image Adjustments -->
-            <div class="bg-cardBg border border-borderBg p-5 rounded-2xl flex flex-col gap-4">
+            <!-- 2. Frame Layers Management -->
+            <div class="bg-cardBg border border-borderBg p-5 rounded-2xl flex flex-col gap-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-lg bg-brandRed/20 text-brandRed text-xs flex items-center justify-center font-bold">২</span>
+                        ফ্রেম লেয়ার অন/অফ
+                    </h3>
+                    <button id="reloadFramesBtn" class="text-[11px] text-brandRed hover:underline font-medium flex items-center gap-1">
+                        <i class="fa-solid fa-arrows-rotate"></i> রি-লোড ফ্রেম
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <label class="flex items-center gap-2 bg-zinc-900/80 p-2.5 rounded-xl border border-borderBg cursor-pointer hover:bg-zinc-850">
+                        <input type="checkbox" id="showBgToggle" checked class="accent-brandRed w-4 h-4 rounded">
+                        <span class="text-zinc-300 font-medium">ব্যাকগ্রাউন্ড লেয়ার</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-zinc-900/80 p-2.5 rounded-xl border border-borderBg cursor-pointer hover:bg-zinc-850">
+                        <input type="checkbox" id="showFgToggle" checked class="accent-brandRed w-4 h-4 rounded">
+                        <span class="text-zinc-300 font-medium">ফোরগ্রাউন্ড লেয়ার</span>
+                    </label>
+                </div>
+
+                <!-- Custom Frame URLs / Local Upload -->
+                <div class="flex flex-col gap-2 pt-2 border-t border-zinc-800">
+                    <details class="group">
+                        <summary class="text-xs font-medium text-zinc-400 cursor-pointer hover:text-zinc-200 flex items-center justify-between py-1">
+                            <span><i class="fa-solid fa-gear mr-1.5 text-zinc-500"></i> কাস্টম ফ্রেম লিংক বা ফাইল আপলোড</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] group-open:rotate-180 transition"></i>
+                        </summary>
+                        <div class="flex flex-col gap-3 mt-3 pt-2 text-xs">
+                            <div>
+                                <label class="block text-[11px] text-zinc-400 mb-1">ব্যাকগ্রাউন্ড ইমেজ URL / ফাইল</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="bgUrlInput" placeholder="https://..." class="w-full bg-zinc-900 border border-borderBg rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:border-brandRed outline-none">
+                                    <label class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-borderBg rounded-lg cursor-pointer whitespace-nowrap text-zinc-300">
+                                        ফাইল
+                                        <input type="file" id="bgFileInput" accept="image/*" class="hidden">
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-zinc-400 mb-1">ফোরগ্রাউন্ড (overlay) PNG URL / ফাইল</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="fgUrlInput" placeholder="https://..." class="w-full bg-zinc-900 border border-borderBg rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:border-brandRed outline-none">
+                                    <label class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-borderBg rounded-lg cursor-pointer whitespace-nowrap text-zinc-300">
+                                        ফাইল
+                                        <input type="file" id="fgFileInput" accept="image/*" class="hidden">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- 3. Essential Image Adjustments (Zoom, X, Y) -->
+            <div class="bg-cardBg border border-borderBg p-5 rounded-2xl flex flex-col gap-4 shadow-lg">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <span class="w-5 h-5 rounded bg-brandRed/20 text-brandRed text-xs flex items-center justify-center font-bold">২</span>
-                    ছবি এডজাস্টমেন্ট
+                    <span class="w-6 h-6 rounded-lg bg-brandRed/20 text-brandRed text-xs flex items-center justify-center font-bold">৩</span>
+                    ছবি পজিশন ও জুম এডজাস্টমেন্ট
                 </h3>
 
                 <!-- Zoom Slider -->
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1.5">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-zinc-300 font-medium">জুম (Scale)</span>
-                        <span id="zoomVal" class="text-zinc-400 font-mono text-[11px]">100%</span>
+                        <span class="text-zinc-300 font-medium flex items-center gap-1.5">
+                            <i class="fa-solid fa-magnifying-glass-plus text-zinc-400"></i> জুম (Scale)
+                        </span>
+                        <span id="zoomVal" class="text-brandRed font-mono font-semibold text-xs">100%</span>
                     </div>
                     <input type="range" id="zoomSlider" min="10" max="300" value="100">
                 </div>
 
                 <!-- Position X -->
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1.5">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-zinc-300 font-medium">ডানে / বামে (X Position)</span>
-                        <span id="posXVal" class="text-zinc-400 font-mono text-[11px]">0px</span>
+                        <span class="text-zinc-300 font-medium flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrows-left-right text-zinc-400"></i> ডানে / বামে (Position X)
+                        </span>
+                        <span id="posXVal" class="text-brandRed font-mono font-semibold text-xs">0px</span>
                     </div>
-                    <input type="range" id="posXSlider" min="-500" max="500" value="0">
+                    <input type="range" id="posXSlider" min="-800" max="800" value="0">
                 </div>
 
                 <!-- Position Y -->
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1.5">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-zinc-300 font-medium">উপরে / নিচে (Y Position)</span>
-                        <span id="posYVal" class="text-zinc-400 font-mono text-[11px]">0px</span>
+                        <span class="text-zinc-300 font-medium flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrows-up-down text-zinc-400"></i> উপরে / নিচে (Position Y)
+                        </span>
+                        <span id="posYVal" class="text-brandRed font-mono font-semibold text-xs">0px</span>
                     </div>
-                    <input type="range" id="posYSlider" min="-500" max="500" value="0">
+                    <input type="range" id="posYSlider" min="-800" max="800" value="0">
                 </div>
 
             </div>
@@ -189,94 +261,255 @@
         </div>
     </main>
 
-    <!-- Minimal Toast Notification -->
-    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-zinc-900 border border-borderBg text-white text-xs px-4 py-2.5 rounded-xl shadow-lg transition-all duration-300 transform translate-y-10 opacity-0 pointer-events-none flex items-center gap-2">
-        <i id="toastIcon" class="fa-solid fa-circle-info text-brandRed"></i>
-        <span id="toastMsg">নোটিফিকেশন</span>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-zinc-900 border border-borderBg text-white text-xs px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-12 opacity-0 pointer-events-none flex items-center gap-2.5">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
+        <span id="toastMsg" class="font-medium">নোটিফিকেশন</span>
     </div>
 
-    <!-- Minimal Footer -->
+    <!-- Footer -->
     <footer class="py-4 text-center text-xs text-zinc-500 border-t border-borderBg mt-8 bg-darkBg">
         <p>© Pro ALBD Team</p>
     </footer>
 
+    <!-- Main JavaScript Logic -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
             // Photoroom API Key
             const PHOTOROOM_API_KEY = 'sk_pr_default_14ddbad48fd3059de0b3bd10a48b0eb457fd680c';
 
-            // =========================================================================
-            // 🖼️ প্লেসহোল্ডার ফ্রেম ইমেজের URL (পরে এখানে আপনার নিজের ইমেজের লিংক বসিয়ে নিবেন)
-            // =========================================================================
-            const BACKGROUND_IMAGE_URL = './p-bg.jpg';
-            const FOREGROUND_IMAGE_URL = './p-fg.png';
+            // Fixed Frame URLs with high-quality fallback generator
+            let backgroundUrl = 'https://raw.githubusercontent.com/proalbd/protyaborton2.0/main/p-bg.jpg';
+            let foregroundUrl = 'https://raw.githubusercontent.com/proalbd/protyaborton2.0/main/p-fg.png';
 
-            // Canvas Elements
-            const canvas = document.getElementById('dpCanvas');
-            const ctx = canvas.getContext('2d');
+            const getEl = (id) => document.getElementById(id);
 
-            // Controls & Sliders
-            const userPhotoInput = document.getElementById('userPhotoInput');
-            const dropZone = document.getElementById('dropZone');
+            // Canvas & Elements
+            const canvas = getEl('dpCanvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
 
-            const zoomSlider = document.getElementById('zoomSlider');
-            const posXSlider = document.getElementById('posXSlider');
-            const posYSlider = document.getElementById('posYSlider');
-            const rotateSlider = document.getElementById('rotateSlider');
-            const brightSlider = document.getElementById('brightSlider');
-            const contrastSlider = document.getElementById('contrastSlider');
+            const userPhotoInput = getEl('userPhotoInput');
+            const dropZone = getEl('dropZone');
 
-            // Slider Indicators
-            const zoomVal = document.getElementById('zoomVal');
-            const posXVal = document.getElementById('posXVal');
-            const posYVal = document.getElementById('posYVal');
-            const rotateVal = document.getElementById('rotateVal');
-            const brightVal = document.getElementById('brightVal');
-            const contrastVal = document.getElementById('contrastVal');
+            // Remaining Sliders
+            const zoomSlider = getEl('zoomSlider');
+            const posXSlider = getEl('posXSlider');
+            const posYSlider = getEl('posYSlider');
 
-            // Action Buttons
-            const resetTransformBtn = document.getElementById('resetTransformBtn');
-            const centerPhotoBtn = document.getElementById('centerPhotoBtn');
-            const flipPhotoBtn = document.getElementById('flipPhotoBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const topDownloadBtn = document.getElementById('topDownloadBtn');
+            // Indicators
+            const zoomVal = getEl('zoomVal');
+            const posXVal = getEl('posXVal');
+            const posYVal = getEl('posYVal');
 
-            // Overlay & Toast
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const loadingText = document.getElementById('loadingText');
-            const loadingSubtext = document.getElementById('loadingSubtext');
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
+            // Frame Controls
+            const bgUrlInput = getEl('bgUrlInput');
+            const fgUrlInput = getEl('fgUrlInput');
+            const bgFileInput = getEl('bgFileInput');
+            const fgFileInput = getEl('fgFileInput');
+            const showBgToggle = getEl('showBgToggle');
+            const showFgToggle = getEl('showFgToggle');
+            const reloadFramesBtn = getEl('reloadFramesBtn');
 
-            // Image Layers & Transform State
+            // Operations & Download
+            const resetTransformBtn = getEl('resetTransformBtn');
+            const centerPhotoBtn = getEl('centerPhotoBtn');
+            const flipPhotoBtn = getEl('flipPhotoBtn');
+            const removeBgBtn = getEl('removeBgBtn');
+            const downloadBtn = getEl('downloadBtn');
+
+            // Overlays & Toast
+            const loadingOverlay = getEl('loadingOverlay');
+            const loadingText = getEl('loadingText');
+            const loadingSubtext = getEl('loadingSubtext');
+            const toast = getEl('toast');
+            const toastMsg = getEl('toastMsg');
+
+            // State
             let userImg = null;
+            let rawUserImg = null; // Keeps original reference
             let fgImg = null;
             let bgImg = null;
+
+            let showBgLayer = true;
+            let showFgLayer = true;
 
             let transform = {
                 x: 0,
                 y: 0,
                 scale: 1.0,
-                rotate: 0,
-                flipH: false,
-                brightness: 100,
-                contrast: 100
+                flipH: false
             };
 
-            // Touch Drag State
+            // Touch / Mouse Drag State
             let isDragging = false;
             let dragStartX = 0;
             let dragStartY = 0;
 
-            // Load Fixed Frame Images
-            function loadFixedFrames() {
-                showLoading('ফ্রেম লোড হচ্ছে...', 'ব্যাকগ্রাউন্ড ও ফোরগ্রাউন্ড লেয়ার প্রস্তুত হচ্ছে');
+            /**
+             * Smart Client-side White Background Removal Algorithm
+             * Uses Flood-Fill starting from image borders to convert white/light backdrop into transparent alpha.
+             */
+            function removeWhiteBackgroundFromImage(imgElement, threshold = 230) {
+                return new Promise((resolve) => {
+                    try {
+                        const tempCanvas = document.createElement('canvas');
+                        const w = imgElement.naturalWidth || imgElement.width || 800;
+                        const h = imgElement.naturalHeight || imgElement.height || 800;
+                        tempCanvas.width = w;
+                        tempCanvas.height = h;
 
-                let loaded = 0;
+                        const tempCtx = tempCanvas.getContext('2d');
+                        tempCtx.drawImage(imgElement, 0, 0, w, h);
+
+                        const imgData = tempCtx.getImageData(0, 0, w, h);
+                        const data = imgData.data;
+
+                        // Visited array for flood fill
+                        const visited = new Uint8Array(w * h);
+                        const queue = [];
+
+                        // Push border pixels if light
+                        function checkAndPushBorder(x, y) {
+                            const idx = y * w + x;
+                            if (visited[idx]) return;
+                            const p = idx * 4;
+                            const r = data[p], g = data[p + 1], b = data[p + 2];
+                            // Check if pixel is white/off-white
+                            if (r >= threshold && g >= threshold && b >= threshold) {
+                                visited[idx] = 1;
+                                queue.push(idx);
+                            }
+                        }
+
+                        for (let x = 0; x < w; x++) {
+                            checkAndPushBorder(x, 0);
+                            checkAndPushBorder(x, h - 1);
+                        }
+                        for (let y = 0; y < h; y++) {
+                            checkAndPushBorder(0, y);
+                            checkAndPushBorder(w - 1, y);
+                        }
+
+                        let head = 0;
+                        while (head < queue.length) {
+                            const idx = queue[head++];
+                            const px = idx % w;
+                            const py = Math.floor(idx / w);
+                            const p = idx * 4;
+
+                            // Make background pixel fully transparent
+                            data[p + 3] = 0;
+
+                            // 4-Connectivity neighbors
+                            const neighbors = [
+                                [px + 1, py], [px - 1, py], [px, py + 1], [px, py - 1]
+                            ];
+
+                            for (let i = 0; i < neighbors.length; i++) {
+                                const nx = neighbors[i][0];
+                                const ny = neighbors[i][1];
+                                if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                                    const nIdx = ny * w + nx;
+                                    if (!visited[nIdx]) {
+                                        const np = nIdx * 4;
+                                        const nr = data[np], ng = data[np + 1], nb = data[np + 2];
+                                        if (nr >= threshold && ng >= threshold && nb >= threshold) {
+                                            visited[nIdx] = 1;
+                                            queue.push(nIdx);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        tempCtx.putImageData(imgData, 0, 0);
+
+                        const resultImg = new Image();
+                        resultImg.onload = () => resolve(resultImg);
+                        resultImg.onerror = () => resolve(imgElement);
+                        resultImg.src = tempCanvas.toDataURL('image/png');
+                    } catch (e) {
+                        console.warn('White BG Removal process failed:', e);
+                        resolve(imgElement);
+                    }
+                });
+            }
+
+            // Fallback Vector Frame Generators if external GitHub URLs 404
+            function createFallbackBackground() {
+                const bgCanvas = document.createElement('canvas');
+                bgCanvas.width = 2048;
+                bgCanvas.height = 2048;
+                const bgCtx = bgCanvas.getContext('2d');
+
+                const grad = bgCtx.createRadialGradient(1024, 1024, 200, 1024, 1024, 1400);
+                grad.addColorStop(0, '#1c1917');
+                grad.addColorStop(0.6, '#0c0a09');
+                grad.addColorStop(1, '#020617');
+                bgCtx.fillStyle = grad;
+                bgCtx.fillRect(0, 0, 2048, 2048);
+
+                bgCtx.strokeStyle = 'rgba(220, 38, 38, 0.15)';
+                bgCtx.lineWidth = 12;
+                bgCtx.beginPath();
+                bgCtx.arc(1024, 1024, 850, 0, Math.PI * 2);
+                bgCtx.stroke();
+
+                const img = new Image();
+                img.src = bgCanvas.toDataURL();
+                return img;
+            }
+
+            function createFallbackForeground() {
+                const fgCanvas = document.createElement('canvas');
+                fgCanvas.width = 2048;
+                fgCanvas.height = 2048;
+                const fgCtx = fgCanvas.getContext('2d');
+
+                fgCtx.lineWidth = 40;
+                fgCtx.strokeStyle = '#dc2626';
+                fgCtx.beginPath();
+                fgCtx.arc(1024, 1024, 980, 0, Math.PI * 2);
+                fgCtx.stroke();
+
+                fgCtx.lineWidth = 20;
+                fgCtx.strokeStyle = '#16a34a';
+                fgCtx.beginPath();
+                fgCtx.arc(1024, 1024, 940, 0, Math.PI * 2);
+                fgCtx.stroke();
+
+                fgCtx.fillStyle = 'rgba(15, 15, 18, 0.88)';
+                fgCtx.beginPath();
+                fgCtx.roundRect(324, 1680, 1400, 260, 40);
+                fgCtx.fill();
+                fgCtx.lineWidth = 6;
+                fgCtx.strokeStyle = '#dc2626';
+                fgCtx.stroke();
+
+                fgCtx.fillStyle = '#ffffff';
+                fgCtx.font = 'bold 90px "Hind Siliguri", sans-serif';
+                fgCtx.textAlign = 'center';
+                fgCtx.fillText('প্রত্যাবর্তন ২.০', 1024, 1800);
+
+                fgCtx.fillStyle = '#16a34a';
+                fgCtx.font = 'bold 45px "Hind Siliguri", sans-serif';
+                fgCtx.fillText('Pro ALBD Official Frame', 1024, 1880);
+
+                const img = new Image();
+                img.src = fgCanvas.toDataURL();
+                return img;
+            }
+
+            // Load Fixed Frame Images safely
+            function loadFixedFrames() {
+                showLoading('ফ্রেম লোড হচ্ছে...', 'ব্যাকগ্রাউন্ড ও ফোরগ্রাউন্ড লেয়ার প্রস্তুত করা হচ্ছে');
+
+                let bgLoaded = false;
+                let fgLoaded = false;
+
                 const checkDone = () => {
-                    loaded++;
-                    if (loaded === 2) {
+                    if (bgLoaded && fgLoaded) {
                         hideLoading();
                         renderCanvas();
                     }
@@ -284,23 +517,47 @@
 
                 bgImg = new Image();
                 bgImg.crossOrigin = 'anonymous';
-                bgImg.onload = checkDone;
-                bgImg.onerror = () => { console.warn('Background image failed to load'); checkDone(); };
-                bgImg.src = BACKGROUND_IMAGE_URL;
+                bgImg.onload = () => {
+                    bgLoaded = true;
+                    checkDone();
+                };
+                bgImg.onerror = () => {
+                    console.warn('Background image failed to load from URL. Using fallback frame.');
+                    bgImg = createFallbackBackground();
+                    bgLoaded = true;
+                    checkDone();
+                };
+                bgImg.src = backgroundUrl;
 
                 fgImg = new Image();
                 fgImg.crossOrigin = 'anonymous';
-                fgImg.onload = checkDone;
-                fgImg.onerror = () => { console.warn('Foreground image failed to load'); checkDone(); };
-                fgImg.src = FOREGROUND_IMAGE_URL;
+                fgImg.onload = () => {
+                    fgLoaded = true;
+                    checkDone();
+                };
+                fgImg.onerror = () => {
+                    console.warn('Foreground image failed to load from URL. Using fallback frame.');
+                    fgImg = createFallbackForeground();
+                    fgLoaded = true;
+                    checkDone();
+                };
+                fgImg.src = foregroundUrl;
             }
 
+            // Render Canvas Layers
             function renderCanvas() {
+                if (!ctx) return;
+
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 // 1. Draw Background Layer
-                if (bgImg && bgImg.complete) {
-                    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+                if (showBgLayer) {
+                    if (bgImg && bgImg.complete && bgImg.naturalWidth !== 0) {
+                        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+                    } else {
+                        ctx.fillStyle = '#09090b';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
                 } else {
                     ctx.fillStyle = '#09090b';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -309,13 +566,11 @@
                 // 2. Draw User Photo Layer
                 if (userImg && userImg.complete) {
                     ctx.save();
-                    ctx.filter = `brightness(${transform.brightness}%) contrast(${transform.contrast}%)`;
 
                     const centerX = canvas.width / 2 + transform.x;
                     const centerY = canvas.height / 2 + transform.y;
                     ctx.translate(centerX, centerY);
 
-                    ctx.rotate((transform.rotate * Math.PI) / 180);
                     ctx.scale(transform.flipH ? -1 : 1, 1);
 
                     const scaledWidth = userImg.width * transform.scale;
@@ -325,16 +580,17 @@
                     ctx.restore();
                 }
 
-                // 3. Draw Foreground Layer
-                if (fgImg && fgImg.complete) {
+                // 3. Draw Foreground Layer (Overlay Frame)
+                if (showFgLayer && fgImg && fgImg.complete && fgImg.naturalWidth !== 0) {
                     ctx.drawImage(fgImg, 0, 0, canvas.width, canvas.height);
                 }
             }
 
+            // Process photo with Photoroom AI + White background stripper fallback
             async function processPhotoWithPhotoroom(file) {
                 if (!file) return;
 
-                showLoading('ছবির ব্যাকগ্রাউন্ড রিমুভ করা হচ্ছে');
+                showLoading('ছবি আপলোড করা হচ্ছে...', 'ব্যাকগ্রাউন্ড ক্লিয়ার করা হচ্ছে');
 
                 try {
                     const formData = new FormData();
@@ -354,9 +610,12 @@
                     const resultUrl = URL.createObjectURL(resultBlob);
 
                     const bgRemovedImg = new Image();
-                    bgRemovedImg.onload = () => {
-                        userImg = bgRemovedImg;
-                        const scaleRatio = Math.min(canvas.width / bgRemovedImg.width, canvas.height / bgRemovedImg.height) * 0.85;
+                    bgRemovedImg.onload = async () => {
+                        rawUserImg = bgRemovedImg;
+                        // Extra pass to ensure any remaining border white pixels are stripped
+                        userImg = await removeWhiteBackgroundFromImage(bgRemovedImg, 240);
+                        
+                        const scaleRatio = Math.min(canvas.width / userImg.width, canvas.height / userImg.height) * 0.85;
                         transform.scale = scaleRatio;
                         transform.x = 0;
                         transform.y = 0;
@@ -370,20 +629,23 @@
                 } catch (err) {
                     console.warn('Photoroom API Fallback:', err);
                     
-                    // Fallback using original image
+                    // Fallback using original image + intelligent client side white background remover
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const fallbackImg = new Image();
-                        fallbackImg.onload = () => {
-                            userImg = fallbackImg;
-                            const scaleRatio = Math.min(canvas.width / fallbackImg.width, canvas.height / fallbackImg.height) * 0.85;
+                        fallbackImg.onload = async () => {
+                            rawUserImg = fallbackImg;
+                            // Remove white background automatically
+                            userImg = await removeWhiteBackgroundFromImage(fallbackImg, 230);
+                            
+                            const scaleRatio = Math.min(canvas.width / userImg.width, canvas.height / userImg.height) * 0.85;
                             transform.scale = scaleRatio;
                             transform.x = 0;
                             transform.y = 0;
                             syncSliderValues();
                             hideLoading();
                             renderCanvas();
-                            showToast('মূল ছবি সিলেক্ট করা হয়েছে');
+                            showToast('ছবি থেকে সাদা ব্যাকগ্রাউন্ড সরাণো হয়েছে');
                         };
                         fallbackImg.src = e.target.result;
                     };
@@ -391,115 +653,191 @@
                 }
             }
 
-            // File input listeners
-            userPhotoInput.addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    processPhotoWithPhotoroom(e.target.files[0]);
-                }
-            });
-
-            // Drag and Drop
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('border-brandRed');
-            });
-
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('border-brandRed');
-            });
-
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('border-brandRed');
-                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                    processPhotoWithPhotoroom(e.dataTransfer.files[0]);
-                }
-            });
-
-            // Sync Sliders Logic
+            // Sync Sliders
             function syncSliderValues() {
-                zoomSlider.value = Math.round(transform.scale * 100);
-                posXSlider.value = transform.x;
-                posYSlider.value = transform.y;
-                rotateSlider.value = transform.rotate;
-                brightSlider.value = transform.brightness;
-                contrastSlider.value = transform.contrast;
+                if (zoomSlider) zoomSlider.value = Math.round(transform.scale * 100);
+                if (posXSlider) posXSlider.value = transform.x;
+                if (posYSlider) posYSlider.value = transform.y;
 
-                zoomVal.textContent = Math.round(transform.scale * 100) + '%';
-                posXVal.textContent = transform.x + 'px';
-                posYVal.textContent = transform.y + 'px';
-                rotateVal.textContent = transform.rotate + '°';
-                brightVal.textContent = transform.brightness + '%';
-                contrastVal.textContent = transform.contrast + '%';
+                if (zoomVal) zoomVal.textContent = Math.round(transform.scale * 100) + '%';
+                if (posXVal) posXVal.textContent = Math.round(transform.x) + 'px';
+                if (posYVal) posYVal.textContent = Math.round(transform.y) + 'px';
             }
 
-            zoomSlider.addEventListener('input', (e) => {
-                transform.scale = parseFloat(e.target.value) / 100;
-                zoomVal.textContent = e.target.value + '%';
-                renderCanvas();
-            });
+            // Sliders Event Listeners
+            if (zoomSlider) {
+                zoomSlider.addEventListener('input', (e) => {
+                    transform.scale = parseFloat(e.target.value) / 100;
+                    if (zoomVal) zoomVal.textContent = e.target.value + '%';
+                    renderCanvas();
+                });
+            }
 
-            posXSlider.addEventListener('input', (e) => {
-                transform.x = parseInt(e.target.value);
-                posXVal.textContent = e.target.value + 'px';
-                renderCanvas();
-            });
+            if (posXSlider) {
+                posXSlider.addEventListener('input', (e) => {
+                    transform.x = parseInt(e.target.value);
+                    if (posXVal) posXVal.textContent = e.target.value + 'px';
+                    renderCanvas();
+                });
+            }
 
-            posYSlider.addEventListener('input', (e) => {
-                transform.y = parseInt(e.target.value);
-                posYVal.textContent = e.target.value + 'px';
-                renderCanvas();
-            });
+            if (posYSlider) {
+                posYSlider.addEventListener('input', (e) => {
+                    transform.y = parseInt(e.target.value);
+                    if (posYVal) posYVal.textContent = e.target.value + 'px';
+                    renderCanvas();
+                });
+            }
 
-            rotateSlider.addEventListener('input', (e) => {
-                transform.rotate = parseInt(e.target.value);
-                rotateVal.textContent = e.target.value + '°';
-                renderCanvas();
-            });
+            // Layer Visibility Toggles
+            if (showBgToggle) {
+                showBgToggle.addEventListener('change', (e) => {
+                    showBgLayer = e.target.checked;
+                    renderCanvas();
+                });
+            }
 
-            brightSlider.addEventListener('input', (e) => {
-                transform.brightness = parseInt(e.target.value);
-                brightVal.textContent = e.target.value + '%';
-                renderCanvas();
-            });
+            if (showFgToggle) {
+                showFgToggle.addEventListener('change', (e) => {
+                    showFgLayer = e.target.checked;
+                    renderCanvas();
+                });
+            }
 
-            contrastSlider.addEventListener('input', (e) => {
-                transform.contrast = parseInt(e.target.value);
-                contrastVal.textContent = e.target.value + '%';
-                renderCanvas();
-            });
+            // Custom URL / File Listeners
+            if (bgUrlInput) {
+                bgUrlInput.addEventListener('change', (e) => {
+                    if (e.target.value.trim()) {
+                        backgroundUrl = e.target.value.trim();
+                        loadFixedFrames();
+                    }
+                });
+            }
 
-            // Quick Canvas Actions
-            resetTransformBtn.addEventListener('click', () => {
-                if (userImg) {
-                    transform.scale = Math.min(canvas.width / userImg.width, canvas.height / userImg.height) * 0.85;
-                } else {
-                    transform.scale = 1.0;
-                }
-                transform.x = 0;
-                transform.y = 0;
-                transform.rotate = 0;
-                transform.flipH = false;
-                transform.brightness = 100;
-                transform.contrast = 100;
-                syncSliderValues();
-                renderCanvas();
-                showToast('এডজাস্টমেন্ট রিসেট করা হয়েছে');
-            });
+            if (fgUrlInput) {
+                fgUrlInput.addEventListener('change', (e) => {
+                    if (e.target.value.trim()) {
+                        foregroundUrl = e.target.value.trim();
+                        loadFixedFrames();
+                    }
+                });
+            }
 
-            centerPhotoBtn.addEventListener('click', () => {
-                transform.x = 0;
-                transform.y = 0;
-                syncSliderValues();
-                renderCanvas();
-            });
+            if (bgFileInput) {
+                bgFileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            backgroundUrl = evt.target.result;
+                            loadFixedFrames();
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+            }
 
-            flipPhotoBtn.addEventListener('click', () => {
-                transform.flipH = !transform.flipH;
-                renderCanvas();
-            });
+            if (fgFileInput) {
+                fgFileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            foregroundUrl = evt.target.result;
+                            loadFixedFrames();
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+            }
 
+            if (reloadFramesBtn) {
+                reloadFramesBtn.addEventListener('click', () => {
+                    loadFixedFrames();
+                    showToast('ফ্রেম রি-লোড করা হচ্ছে');
+                });
+            }
+
+            // File input listeners
+            if (userPhotoInput) {
+                userPhotoInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        processPhotoWithPhotoroom(e.target.files[0]);
+                    }
+                });
+            }
+
+            // Drag and Drop Zone
+            if (dropZone) {
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('border-brandRed', 'bg-zinc-900');
+                });
+
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('border-brandRed', 'bg-zinc-900');
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('border-brandRed', 'bg-zinc-900');
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        processPhotoWithPhotoroom(e.dataTransfer.files[0]);
+                    }
+                });
+            }
+
+            // Quick Operations
+            if (resetTransformBtn) {
+                resetTransformBtn.addEventListener('click', () => {
+                    if (userImg) {
+                        transform.scale = Math.min(canvas.width / userImg.width, canvas.height / userImg.height) * 0.85;
+                    } else {
+                        transform.scale = 1.0;
+                    }
+                    transform.x = 0;
+                    transform.y = 0;
+                    transform.flipH = false;
+                    syncSliderValues();
+                    renderCanvas();
+                    showToast('এডজাস্টমেন্ট রিসেট করা হয়েছে');
+                });
+            }
+
+            if (centerPhotoBtn) {
+                centerPhotoBtn.addEventListener('click', () => {
+                    transform.x = 0;
+                    transform.y = 0;
+                    syncSliderValues();
+                    renderCanvas();
+                    showToast('ছবি সেন্টারে আনা হয়েছে');
+                });
+            }
+
+            if (flipPhotoBtn) {
+                flipPhotoBtn.addEventListener('click', () => {
+                    transform.flipH = !transform.flipH;
+                    renderCanvas();
+                    showToast('ছবি ফ্লিপ করা হয়েছে');
+                });
+            }
+
+            if (removeBgBtn) {
+                removeBgBtn.addEventListener('click', async () => {
+                    if (!userImg) {
+                        showToast('প্রথমে একটি ছবি আপলোড করুন');
+                        return;
+                    }
+                    showLoading('সাদা ব্যাকগ্রাউন্ড পরিষ্কার করা হচ্ছে...');
+                    const source = rawUserImg || userImg;
+                    userImg = await removeWhiteBackgroundFromImage(source, 220);
+                    hideLoading();
+                    renderCanvas();
+                    showToast('সাদা ব্যাকগ্রাউন্ড দূর করা হয়েছে');
+                });
+            }
+
+            // Touch & Mouse Dragging logic
             function getCanvasCoords(e) {
+                if (!canvas) return { x: 0, y: 0 };
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -512,70 +850,88 @@
                 };
             }
 
-            canvas.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                const coords = getCanvasCoords(e);
-                dragStartX = coords.x - transform.x;
-                dragStartY = coords.y - transform.y;
-            });
+            if (canvas) {
+                const startDrag = (e) => {
+                    isDragging = true;
+                    const coords = getCanvasCoords(e);
+                    dragStartX = coords.x - transform.x;
+                    dragStartY = coords.y - transform.y;
+                };
 
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                const coords = getCanvasCoords(e);
-                transform.x = Math.max(-800, Math.min(800, coords.x - dragStartX));
-                transform.y = Math.max(-800, Math.min(800, coords.y - dragStartY));
-                syncSliderValues();
-                renderCanvas();
-            });
+                const moveDrag = (e) => {
+                    if (!isDragging) return;
+                    const coords = getCanvasCoords(e);
+                    transform.x = Math.max(-1000, Math.min(1000, coords.x - dragStartX));
+                    transform.y = Math.max(-1000, Math.min(1000, coords.y - dragStartY));
+                    syncSliderValues();
+                    renderCanvas();
+                };
 
-            window.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
+                const stopDrag = () => {
+                    isDragging = false;
+                };
 
+                canvas.addEventListener('mousedown', startDrag);
+                window.addEventListener('mousemove', moveDrag);
+                window.addEventListener('mouseup', stopDrag);
+
+                canvas.addEventListener('touchstart', startDrag, { passive: true });
+                window.addEventListener('touchmove', moveDrag, { passive: true });
+                window.addEventListener('touchend', stopDrag);
+            }
+
+            // Download HD Image
             function downloadDP() {
+                if (!canvas) return;
                 const link = document.createElement('a');
                 link.download = `Protyaborton_DP_${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
-                showToast('এইচডি ডি পি ডাউনলোড হচ্ছে!');
+                showToast('এইচডি ডি পি ডাউনলোড শুরু হয়েছে!');
             }
 
-            downloadBtn.addEventListener('click', downloadDP);
-            topDownloadBtn.addEventListener('click', downloadDP);
+            if (downloadBtn) downloadBtn.addEventListener('click', downloadDP);
 
             // Helpers
             function showLoading(text, subtext) {
-                loadingText.textContent = text;
-                loadingSubtext.textContent = subtext;
-                loadingOverlay.classList.remove('hidden');
+                if (loadingText) loadingText.textContent = text;
+                if (loadingSubtext) loadingSubtext.textContent = subtext || '';
+                if (loadingOverlay) loadingOverlay.classList.remove('hidden');
             }
 
             function hideLoading() {
-                loadingOverlay.classList.add('hidden');
+                if (loadingOverlay) loadingOverlay.classList.add('hidden');
             }
 
             function showToast(message) {
+                if (!toast || !toastMsg) return;
                 toastMsg.textContent = message;
-                toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+                toast.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
                 setTimeout(() => {
-                    toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+                    toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
                 }, 3000);
             }
 
-            // Load initial placeholder user photo
+            // Initial SVG placeholder photo
             function loadSamplePhoto() {
-                const sampleSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
-                    <rect width="600" height="600" fill="#141416"/>
-                    <circle cx="300" cy="230" r="100" fill="#dc2626"/>
-                    <path d="M 140 500 C 140 370, 460 370, 460 500 Z" fill="#16a34a"/>
+                const sampleSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+                    <rect width="800" height="800" fill="transparent"/>
+                    <circle cx="400" cy="300" r="140" fill="#dc2626"/>
+                    <path d="M 180 680 C 180 480, 620 480, 620 680 Z" fill="#16a34a"/>
                 </svg>`;
 
                 userImg = new Image();
-                userImg.onload = () => renderCanvas();
+                userImg.onload = () => {
+                    if (userImg) {
+                        transform.scale = Math.min(canvas.width / userImg.width, canvas.height / userImg.height) * 0.85;
+                    }
+                    syncSliderValues();
+                    renderCanvas();
+                };
                 userImg.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(sampleSvg);
             }
 
-            // Initialize App
+            // Initialize Application
             loadSamplePhoto();
             loadFixedFrames();
         });
